@@ -11,7 +11,7 @@ router.route("/api/v1/register").post(
             maxCount: 1
         },
         {
-            name: "coverIamge",
+            name: "coverImage",
             maxCount: 1
         }
     ]),
