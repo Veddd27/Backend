@@ -19,6 +19,18 @@ export default function VideoDetail() {
   const [liking, setLiking] = useState(false)
   const [subscribing, setSubscribing] = useState(false)
 
+  // Playlist dropdown states
+  const [playlists, setPlaylists] = useState([])
+  const [showPlaylistDropdown, setShowPlaylistDropdown] = useState(false)
+
+  useEffect(() => {
+    if (user) {
+      api.getUserPlaylists(user._id)
+        .then((res) => setPlaylists(res.data || []))
+        .catch((err) => console.error('Error loading user playlists:', err))
+    }
+  }, [user])
+
   useEffect(() => {
     async function loadVideo() {
       try {
@@ -77,6 +89,15 @@ export default function VideoDetail() {
       setSubscribing(false)
     }
   }
+  async function handleAddToPlaylist(playlistId) {
+    try {
+      await api.addVideoToPlaylist(videoId, playlistId)
+      alert('Video added to playlist successfully!')
+      setShowPlaylistDropdown(false)
+    } catch (err) {
+      alert(err.message)
+    }
+  }
 
   if (loading) return <div className="page-center">Loading video...</div>
   if (error) return <div className="page-center error">{error}</div>
@@ -99,6 +120,39 @@ export default function VideoDetail() {
           >
             {video.isLiked ? '❤️ Liked' : '🤍 Like'} ({video.likesCount || 0})
           </button>
+
+          {user && (
+            <div className="add-to-playlist-container" style={{ position: 'relative' }}>
+              <button
+                className="btn btn-ghost"
+                onClick={() => setShowPlaylistDropdown(!showPlaylistDropdown)}
+              >
+                ➕ Save
+              </button>
+              {showPlaylistDropdown && (
+                <div className="playlist-mini-dropdown">
+                  <h4>Save to...</h4>
+                  {playlists.length === 0 ? (
+                    <p className="muted" style={{ padding: '8px', fontSize: '0.85rem' }}>
+                      No playlists found. Create one in the Playlists page!
+                    </p>
+                  ) : (
+                    <div className="mini-pl-list">
+                      {playlists.map((pl) => (
+                        <button
+                          key={pl._id}
+                          onClick={() => handleAddToPlaylist(pl._id)}
+                          className="mini-pl-item"
+                        >
+                          📁 {pl.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <p className="description">{video.description}</p>
 

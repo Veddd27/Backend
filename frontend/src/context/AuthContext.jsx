@@ -68,8 +68,18 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
+  async function refreshUser() {
+    try {
+      const res = await api.getCurrentUser()
+      setUser(res.data)
+      return res.data
+    } catch (err) {
+      console.error('Failed to refresh user:', err)
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, setUser, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

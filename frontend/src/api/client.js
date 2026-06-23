@@ -108,9 +108,28 @@ export function addComment(videoId, content) {
   })
 }
 
+export function deleteComment(commentId) {
+  return request(`/comments/c/${commentId}`, { method: 'DELETE' })
+}
+
+export function updateComment(commentId, content) {
+  return request(`/comments/c/${commentId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ content }),
+  })
+}
+
 // ─── Likes ──────────────────────────────────────────────
 export function toggleVideoLike(videoId) {
   return request(`/likes/toggle/v/${videoId}`, { method: 'POST' })
+}
+
+export function toggleCommentLike(commentId) {
+  return request(`/likes/toggle/c/${commentId}`, { method: 'POST' })
+}
+
+export function getLikedVideos() {
+  return request('/likes/videos')
 }
 
 // ─── Channel ────────────────────────────────────────────
@@ -122,3 +141,102 @@ export function getChannelProfile(username) {
 export function toggleSubscription(channelId) {
   return request(`/subscription/c/${channelId}`, { method: 'POST' })
 }
+
+export function getSubscribedChannels(subscriberId) {
+  return request(`/subscription/u/${subscriberId}`)
+}
+
+// ─── Watch History ──────────────────────────────────────
+export function getWatchHistory() {
+  return request('/users/history')
+}
+
+// ─── Tweets ─────────────────────────────────────────────
+export function getUserTweets(userId) {
+  return request(`/tweets/user/${userId}`)
+}
+
+export function createTweet(content) {
+  return request('/tweets', {
+    method: 'POST',
+    body: JSON.stringify({ content }),
+  })
+}
+
+export function updateTweet(tweetId, content) {
+  return request(`/tweets/${tweetId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ content }),
+  })
+}
+
+export function deleteTweet(tweetId) {
+  return request(`/tweets/${tweetId}`, { method: 'DELETE' })
+}
+
+// ─── Playlists ──────────────────────────────────────────
+export function createPlaylist(playlistData) {
+  return request('/playlist', {
+    method: 'POST',
+    body: JSON.stringify(playlistData),
+  })
+}
+
+export function getUserPlaylists(userId) {
+  return request(`/playlist/user/${userId}`)
+}
+
+export function getPlaylistById(playlistId) {
+  return request(`/playlist/${playlistId}`)
+}
+
+export function addVideoToPlaylist(videoId, playlistId) {
+  return request(`/playlist/add/${videoId}/${playlistId}`, { method: 'PATCH' })
+}
+
+export function removeVideoFromPlaylist(videoId, playlistId) {
+  return request(`/playlist/remove/${videoId}/${playlistId}`, { method: 'PATCH' })
+}
+
+export function deletePlaylist(playlistId) {
+  return request(`/playlist/${playlistId}`, { method: 'DELETE' })
+}
+
+export function updatePlaylist(playlistId, playlistData) {
+  return request(`/playlist/${playlistId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(playlistData),
+  })
+}
+
+// ─── User Profile & Settings ────────────────────────────
+export function changePassword(data) {
+  return request('/users/change-password', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export function updateAccountDetails(data) {
+  return request('/users/update-account', {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+}
+
+export function updateUserAvatar(formData) {
+  return request('/users/avatar', {
+    method: 'PATCH',
+    body: formData,
+    isFormData: true,
+  })
+}
+
+export function updateUserCoverImage(formData) {
+  return request('/users/cover-image', {
+    method: 'PUT',
+    body: formData,
+    isFormData: true,
+  })
+}
+

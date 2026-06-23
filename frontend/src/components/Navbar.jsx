@@ -12,11 +12,17 @@ export default function Navbar() {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const searchRef = useRef(null)
 
-  // Handle clicking outside to close suggestions
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const userMenuRef = useRef(null)
+
+  // Handle clicking outside to close suggestions or user menu
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSuggestions(false)
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setShowUserMenu(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -102,15 +108,43 @@ export default function Navbar() {
       <div className="nav-links">
         {user ? (
           <>
-            <Link to="/upload">Upload</Link>
-            <Link to="/my-videos">My Videos</Link>
-            <Link to={`/channel/${user.username}`} className="nav-user">
-              {user.avatar && <img src={user.avatar} alt="" className="avatar-sm" />}
-              {user.username}
-            </Link>
-            <button onClick={handleLogout} className="btn btn-ghost">
-              Logout
-            </button>
+            <Link to="/upload" className="nav-link-item">Upload</Link>
+            <Link to="/my-videos" className="nav-link-item">My Videos</Link>
+            
+            <div className="user-menu-container" ref={userMenuRef}>
+              <button 
+                onClick={() => setShowUserMenu(!showUserMenu)} 
+                className="nav-user-btn"
+              >
+                {user.avatar && <img src={user.avatar} alt="" className="avatar-sm" />}
+                <span className="username-text">{user.username}</span>
+                <span className="arrow-down">▼</span>
+              </button>
+              
+              {showUserMenu && (
+                <div className="user-dropdown-menu">
+                  <Link to={`/channel/${user.username}`} onClick={() => setShowUserMenu(false)}>
+                    👤 My Channel
+                  </Link>
+                  <Link to="/history" onClick={() => setShowUserMenu(false)}>
+                    📜 Watch History
+                  </Link>
+                  <Link to="/playlists" onClick={() => setShowUserMenu(false)}>
+                    📁 Playlists
+                  </Link>
+                  <Link to="/liked-videos" onClick={() => setShowUserMenu(false)}>
+                    ❤️ Liked Videos
+                  </Link>
+                  <Link to="/settings" onClick={() => setShowUserMenu(false)}>
+                    ⚙️ Settings
+                  </Link>
+                  <hr className="dropdown-divider" />
+                  <button onClick={() => { setShowUserMenu(false); handleLogout(); }} className="dropdown-logout-btn">
+                    🚪 Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <>
